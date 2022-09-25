@@ -59,16 +59,17 @@ function cell(i, j) {
                 return;
             }
 
-            boxOpen(target);
-
+            openSafeZone(target);
         }
     });
 
-    function boxOpen(target) {
+    function boxOpen(target, countMineNeighbor) {
         target.classList.remove('cell');
         target.classList.add('checked');
-        target.innerText = countMineNeighbor(target);
+        target.innerText = countMineNeighbor;
+        console.log(target.dataset.row + "," + target.dataset.column);
     }
+
     function countMineNeighbor(target) {
         const row = Number(target.dataset.row);
         const col = Number(target.dataset.column);
@@ -80,13 +81,28 @@ function cell(i, j) {
                 if (row+i<0 || row+i>9 || col+j <0 || col+j>9) continue;
 
                 cnt += mineMatrix[row+i][col+j].box.dataset.isMine === 'true'? 1: 0;
-                console.log(cnt);
             }
         }
 
         return cnt;
     }
     
+    function openSafeZone(target) {
+        const row = Number(target.dataset.row);
+        const col = Number(target.dataset.column);
+        var cnt = countMineNeighbor(target);
+        boxOpen(target, cnt);
+        if (cnt !== 0) return;
 
-    
+        for(var i=-1; i<2; i++) {
+            for(var j=-1; j<2; j++) {
+                if (i==0 && j==0) continue;
+                if (row+i<0 || row+i>9 || col+j <0 || col+j>9) continue;
+                if ( mineMatrix[row+i][col+j].box.classList.contains('checked') ) continue;
+
+                openSafeZone(mineMatrix[row+i][col+j].box);
+            }
+        }
+    }
+
 })()
