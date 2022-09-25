@@ -67,7 +67,7 @@ function cell(i, j) {
         target.classList.remove('cell');
         target.classList.add('checked');
         target.innerText = countMineNeighbor;
-        console.log(target.dataset.row + "," + target.dataset.column);
+        target.dataset.mineNeighbor = countMineNeighbor;
     }
 
     function countMineNeighbor(target) {
