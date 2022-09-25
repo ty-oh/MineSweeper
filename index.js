@@ -13,6 +13,7 @@ function cell(i, j) {
     div.dataset.row = i;
     div.dataset.column = j;
     div.dataset.isMine = false;
+    div.dataset.isFlag = false;
 
     return div;
 }
@@ -23,6 +24,9 @@ function cell(i, j) {
     var totalMine = 10;
     var totalCol = 10;
     var totalRow = 10;
+    var isRightPressed = false;
+    var isLeftPressed = false;
+    var isBothPressed = false;
 
     //필드 객체 생성
     for(i=0; i<totalRow; i++) {
@@ -60,31 +64,91 @@ function cell(i, j) {
     //이벤트
     document.querySelector('#field').addEventListener('click', ({ target }) => {
         if(target.classList.contains('cell')) {
-            if(target.dataset.isMine === 'true') {
-                alert('you lose.');
-                window.location.reload();
-                return;
-            }
-
             openSafeZone(target);
         }
     });
-    
+
+    document.querySelector('#field').addEventListener('mousedown', ({ target, which, button }) => {
+        if (which == 1 || button == 0) isLeftPressed = true;
+        if (which == 3 || button == 2) isRightPressed = true;
+
+        if(isLeftPressed && isRightPressed) isBothPressed = true;
+    })
+
     document.querySelector('#field').addEventListener('mouseup', ({ target, which, button }) => {
+        if (which == 1 || button == 0) isLeftPressed = false;
+        if (which == 3 || button == 2) isRightPressed = false;
         isRightClick = (which == 3) || (button == 2);
-        if (isRightClick) {
-            target.innerHTML = `
-                <span class="material-icons">flag</span>
-                `;
+
+        if(target.classList.contains('checked')) {
+            if(isBothPressed) openNotFlaged(target);
         }
 
+        if(target.classList.contains('cell')) {
+            if (isRightClick && !isBothPressed) flag(target);
+        }
+
+        isBothPressed = false;
+        isLeftPressed = false;
+        isRightPressed = false;
     });
 
-    function boxOpen(target, countMineNeighbor) {
+    function flag(target) {
+        if(target.dataset.isFlag === 'true') {
+            target.dataset.isFlag = false;
+            target.innerHTML = ``;
+        } else{
+            target.dataset.isFlag = true;
+            target.innerHTML = `<span class="material-icons">flag</span>`;
+        }
+    }
+
+    function openNotFlaged(target) {
+        if (countFlags(target) != target.dataset.mineNeighbor) return;
+
+        const row = Number(target.dataset.row);
+        const col = Number(target.dataset.column);
+
+        for(var i=-1; i<2; i++) {
+            for(var j=-1; j<2; j++) {
+                if (i==0 && j==0) continue;
+                if (row+i<0 || row+i>totalRow-1 || col+j <0 || col+j>totalCol-1) continue;
+                if ( mineMatrix[row+i][col+j].box.classList.contains('checked') ) continue;
+                if ( mineMatrix[row+i][col+j].box.dataset.isFlag == 'true') continue;
+
+                openSafeZone(mineMatrix[row+i][col+j].box);
+            }
+        }
+    }
+
+    function countFlags(target) {
+        const row = Number(target.dataset.row);
+        const col = Number(target.dataset.column);
+        var cnt = 0;
+
+        for(var i=-1; i<2; i++) {
+            for(var j=-1; j<2; j++) {
+                if (i==0 && j==0) continue;
+                if (row+i<0 || row+i>totalRow-1 || col+j <0 || col+j>totalCol-1) continue;
+                
+                if ( mineMatrix[row+i][col+j].box.dataset.isFlag == 'true') cnt ++;
+            }
+        }
+    
+        return cnt;
+    }
+
+    function boxOpen(target, cntMine) {
         target.classList.remove('cell');
         target.classList.add('checked');
-        target.innerText = countMineNeighbor;
-        target.dataset.mineNeighbor = countMineNeighbor;
+        target.innerText = cntMine ? cntMine : countMineNeighbor(target);
+        target.dataset.mineNeighbor = cntMine;
+        if (target.dataset.isMine == 'true') gameOver();
+    }
+
+    function gameOver() {
+        alert('you lose.');
+        window.location.reload();
     }
 
     function countMineNeighbor(target) {
