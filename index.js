@@ -12,6 +12,7 @@ function cell(i, j) {
     div.classList.add('box');
     div.dataset.row = i;
     div.dataset.column = j;
+    div.dataset.isMine = false;
 
     return div;
 }
@@ -52,16 +53,40 @@ function cell(i, j) {
 
     document.querySelector('#field').addEventListener('click', ({ target }) => {
         if(target.classList.contains('cell')) {
-            console.log(target);
-            target.classList.remove('cell');
-            target.classList.add('checked');
-        }
-        if(target.dataset.isMine == 'true') {
-            console.log(target);
-            alert('you lose.');
-            window.location.reload();
+            if(target.dataset.isMine === 'true') {
+                alert('you lose.');
+                window.location.reload();
+                return;
+            }
+
+            boxOpen(target);
+
         }
     });
+
+    function boxOpen(target) {
+        target.classList.remove('cell');
+        target.classList.add('checked');
+        target.innerText = countMineNeighbor(target);
+    }
+    function countMineNeighbor(target) {
+        const row = Number(target.dataset.row);
+        const col = Number(target.dataset.column);
+        var cnt = 0;
+
+        for(var i=-1; i<2; i++) {
+            for(var j=-1; j<2; j++) {
+                if (i==0 && j==0) continue;
+                if (row+i<0 || row+i>9 || col+j <0 || col+j>9) continue;
+
+                cnt += mineMatrix[row+i][col+j].box.dataset.isMine === 'true'? 1: 0;
+                console.log(cnt);
+            }
+        }
+
+        return cnt;
+    }
+    
 
     
 })()

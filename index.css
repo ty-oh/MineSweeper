@@ -4,9 +4,15 @@
 }
 
 .box {
+    display: flex;
+    padding: 0;
     background-color: lightgray;
     width: 30px;
-    height: 30px;    
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color:aqua;
 }
 
 .mine {
