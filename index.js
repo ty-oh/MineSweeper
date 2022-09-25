@@ -186,6 +186,11 @@ function cell(i, j) {
         }
     }
 
+    function check() {
+        
+    }
+
+
     window.oncontextmenu = function() {
         return false;
     }
