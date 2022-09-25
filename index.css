@@ -29,12 +29,13 @@
 }
 
 .cell::after {
+    position: absolute;
     content: "";
     display: block;
     width: 40px;
     height: 40px;
     background-color: rgb(55, 0, 255);
-    transform: translate(-5px, -5px) scale(0%);
+    transform: scale(0%);
 }
 
 .cell:hover::after {
@@ -45,11 +46,11 @@
 
 @keyframes hovering {
     0% {
-        transform: translate(-5px, -5px) scale(50%);
+        transform:  scale(50%);
         opacity: 50%;
     }
     100% {
-        transform: translate(-5px, -5px) scale(100%);
+        transform:  scale(120%);
         opacity: 5%;
     }
 }

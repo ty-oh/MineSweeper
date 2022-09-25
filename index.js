@@ -20,10 +20,14 @@ function cell(i, j) {
 (function() {
     const fragment = document.createDocumentFragment();
     const mineMatrix = [];
+    var totalMine = 10;
+    var totalCol = 10;
+    var totalRow = 10;
 
-    for(i=0; i<10; i++) {
+    //필드 객체 생성
+    for(i=0; i<totalRow; i++) {
         const mineMatrixRow = [];
-        for(j=0; j<10; j++) {
+        for(j=0; j<totalCol; j++) {
             const div = cell(i, j);
             const mineBox = new MineBox(div, false, 0);
             mineMatrixRow.push(mineBox);
@@ -31,6 +35,7 @@ function cell(i, j) {
         mineMatrix.push(mineMatrixRow);
     }
 
+    //필드 HTML 삽입
     for(i=0; i<mineMatrix.length; i++) {
         const row = document.createElement('div');
         row.className = 'matrix_row';
@@ -41,16 +46,18 @@ function cell(i, j) {
         fragment.appendChild(row);
     }
 
-    for(i=0; i<10; i++) {
-        random = Math.floor(Math.random()*100);
-        randomx = Math.floor(random/10);
-        randomy = random % 10;
+    //지뢰 생성
+    for(i=0; i<totalMine; i++) {
+        random = Math.floor(Math.random()*totalRow*totalCol);
+        randomx = Math.floor(random/totalCol);
+        randomy = random % totalCol; // ***
 
         mineMatrix[randomx][randomy].box.dataset.isMine = 'true';
     }
     
     document.querySelector('#field').appendChild(fragment);
 
+    //이벤트
     document.querySelector('#field').addEventListener('click', ({ target }) => {
         if(target.classList.contains('cell')) {
             if(target.dataset.isMine === 'true') {
@@ -61,6 +68,16 @@ function cell(i, j) {
 
             openSafeZone(target);
         }
+    });
+    
+    document.querySelector('#field').addEventListener('mouseup', ({ target, which, button }) => {
+        isRightClick = (which == 3) || (button == 2);
+        if (isRightClick) {
+            target.innerHTML = `
+                <span class="material-icons">flag</span>
+                `;
+        }
+
     });
 
     function boxOpen(target, countMineNeighbor) {
@@ -78,7 +95,7 @@ function cell(i, j) {
         for(var i=-1; i<2; i++) {
             for(var j=-1; j<2; j++) {
                 if (i==0 && j==0) continue;
-                if (row+i<0 || row+i>9 || col+j <0 || col+j>9) continue;
+                if (row+i<0 || row+i>totalRow-1 || col+j <0 || col+j>totalCol-1) continue;
 
                 cnt += mineMatrix[row+i][col+j].box.dataset.isMine === 'true'? 1: 0;
             }
@@ -97,7 +114,7 @@ function cell(i, j) {
         for(var i=-1; i<2; i++) {
             for(var j=-1; j<2; j++) {
                 if (i==0 && j==0) continue;
-                if (row+i<0 || row+i>9 || col+j <0 || col+j>9) continue;
+                if (row+i<0 || row+i>totalRow-1 || col+j <0 || col+j>totalCol-1) continue;
                 if ( mineMatrix[row+i][col+j].box.classList.contains('checked') ) continue;
 
                 openSafeZone(mineMatrix[row+i][col+j].box);
@@ -105,4 +122,7 @@ function cell(i, j) {
         }
     }
 
+    window.oncontextmenu = function() {
+        return false;
+    }
 })()
