@@ -77,7 +77,7 @@ function gameStart() {
 
 function fieldReset() {
     clearInterval(timer);
-    setTimer();
+    timer = false;
     document.querySelector('#field').innerHTML = ``;
     while( mineMatrix.length > 0 ) {
         mineMatrix.pop();
@@ -89,6 +89,7 @@ setEvent();
 function setEvent() {
     //이벤트
     document.querySelector('#field').addEventListener('click', ({ target }) => {
+        if (!timer) setTimer();
         if(target.classList.contains('cell')) {
             openSafeZone(target);
         }
