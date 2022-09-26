@@ -11,8 +11,12 @@
 <body>
     <div id="nav">
         <div id="MinesOrFlags"></div>
-        <div id="Level"></div>
-        <div id="Timer"></div>
+        <select name="Level" onchange="changeLevel(this.value)">
+            <option value="easy">초급</option>
+            <option value="normal">중급</option>
+            <option value="hard">고급</option>
+        </select>
+        <div id="timer"></div>
     </div>
     <div id="field"></div>
     <button>확인</button>
