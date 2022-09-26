@@ -7,7 +7,7 @@ var isRightPressed = false;
 var isLeftPressed = false;
 var isBothPressed = false;
 var level = document.querySelector('select').value;
-
+let timer;
 
 class MineBox {
     constructor(box, isMine, number) {
@@ -76,6 +76,8 @@ function gameStart() {
 }
 
 function fieldReset() {
+    clearInterval(timer);
+    setTimer();
     document.querySelector('#field').innerHTML = ``;
     while( mineMatrix.length > 0 ) {
         mineMatrix.pop();
@@ -233,7 +235,6 @@ function setEvent() {
         }
 
     }
-
 }
 
 
@@ -257,4 +258,13 @@ function changeLevel(level) {
         console.log(totalMine);
         gameStart();
     }
+}
+
+function setTimer() {
+    var time = 0;
+    const timerView = document.querySelector('#timer');
+    timer = setInterval(() => {
+        timerView.innerHTML=`${time}`;
+        time++;
+    }, 1000);
 }
