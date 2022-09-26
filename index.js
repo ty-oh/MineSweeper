@@ -1,3 +1,14 @@
+const fragment = document.createDocumentFragment();
+const mineMatrix = [];
+var totalMine = 10;
+var totalCol = 10;
+var totalRow = 10;
+var isRightPressed = false;
+var isLeftPressed = false;
+var isBothPressed = false;
+var level = document.querySelector('select').value;
+
+
 class MineBox {
     constructor(box, isMine, number) {
         this.box = box;
@@ -18,16 +29,10 @@ function cell(i, j) {
     return div;
 }
 
-(function() {
-    const fragment = document.createDocumentFragment();
-    const mineMatrix = [];
-    var totalMine = 10;
-    var totalCol = 10;
-    var totalRow = 10;
-    var isRightPressed = false;
-    var isLeftPressed = false;
-    var isBothPressed = false;
+function gameStart() {
 
+
+    fieldReset();
     //필드 객체 생성
     for(i=0; i<totalRow; i++) {
         const mineMatrixRow = [];
@@ -55,16 +60,31 @@ function cell(i, j) {
         random = Math.floor(Math.random()*totalRow*totalCol);
         randomx = Math.floor(random/totalCol);
         randomy = random % totalCol; // ***
-        console.log(random);
+
         if (mineMatrix[randomx][randomy].box.dataset.isMine == 'true') {
             i--;
             continue;
         }
         mineMatrix[randomx][randomy].box.dataset.isMine = 'true';
     }
-    
+
     document.querySelector('#field').appendChild(fragment);
 
+    window.oncontextmenu = function() {
+        return false;
+    }
+}
+
+function fieldReset() {
+    document.querySelector('#field').innerHTML = ``;
+    while( mineMatrix.length > 0 ) {
+        mineMatrix.pop();
+    }
+}
+gameStart();
+setEvent();
+
+function setEvent() {
     //이벤트
     document.querySelector('#field').addEventListener('click', ({ target }) => {
         if(target.classList.contains('cell')) {
@@ -91,7 +111,7 @@ function cell(i, j) {
         if(target.classList.contains('cell')) {
             if (isRightClick && !isBothPressed) flag(target);
         }
-
+        console.log(target);
         isBothPressed = false;
         isLeftPressed = false;
         isRightPressed = false;
@@ -214,8 +234,27 @@ function cell(i, j) {
 
     }
 
+}
 
-    window.oncontextmenu = function() {
-        return false;
+
+function changeLevel(level) {
+    if (level == 'easy') {
+        totalMine = 20;
+        totalCol = 10;
+        totalRow = 10;
+        console.log(totalMine);
+        gameStart();
+    } else if( level == 'normal') {
+        totalMine = 60;
+        totalCol = 20;
+        totalRow = 20;
+        console.log(totalMine);
+        gameStart();
+    } else if( level == 'hard') {
+        totalMine = 100;
+        totalCol = 30;
+        totalRow = 20;
+        console.log(totalMine);
+        gameStart();
     }
-})()
+}
