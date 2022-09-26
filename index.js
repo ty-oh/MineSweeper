@@ -55,7 +55,11 @@ function cell(i, j) {
         random = Math.floor(Math.random()*totalRow*totalCol);
         randomx = Math.floor(random/totalCol);
         randomy = random % totalCol; // ***
-
+        console.log(random);
+        if (mineMatrix[randomx][randomy].box.dataset.isMine == 'true') {
+            i--;
+            continue;
+        }
         mineMatrix[randomx][randomy].box.dataset.isMine = 'true';
     }
     
@@ -92,6 +96,10 @@ function cell(i, j) {
         isLeftPressed = false;
         isRightPressed = false;
     });
+
+    document.querySelector('button').addEventListener('click', () => {
+        check();
+    })
 
     function flag(target) {
         if(target.dataset.isFlag === 'true') {
@@ -187,7 +195,23 @@ function cell(i, j) {
     }
 
     function check() {
+        var cnt = 0;
+        for(var i=0; i<totalRow; i++) {
+            for(var j=0; j<totalCol; j++) {
+                console.log(cnt);
+                if (mineMatrix[i][j].box.dataset.isMine == 'true' && mineMatrix[i][j].box.dataset.isFlag == 'true') {
+                    cnt++;
+                    console.log(cnt);
+                }
+            }
+        }
         
+        if(cnt == totalMine) {
+            alert('You Win!!!');
+        } else {
+            gameOver();
+        }
+
     }
 
 
