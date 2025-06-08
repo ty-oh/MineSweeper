@@ -91,7 +91,9 @@ function setEvent() {
     document.querySelector('#field').addEventListener('click', ({ target }) => {
         if (!timer) setTimer();
         if(target.classList.contains('cell')) {
-            openSafeZone(target);
+            if (target.dataset.isFlag !== 'true') {
+                openSafeZone(target);
+            }
         }
     });
 
@@ -105,7 +107,7 @@ function setEvent() {
     document.querySelector('#field').addEventListener('mouseup', ({ target, which, button }) => {
         if (which == 1 || button == 0) isLeftPressed = false;
         if (which == 3 || button == 2) isRightPressed = false;
-        isRightClick = (which == 3) || (button == 2);
+        const isRightClick = (which == 3) || (button == 2);
 
         if(target.classList.contains('checked')) {
             if(isBothPressed) openNotFlaged(target);
