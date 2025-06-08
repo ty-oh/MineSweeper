@@ -258,6 +258,12 @@ function changeLevel(level) {
         totalRow = 20;
         console.log(totalMine);
         gameStart();
+    } else if( level == 'extreme') {
+        totalMine = 150;
+        totalCol = 40;
+        totalRow = 30;
+        console.log(totalMine);
+        gameStart();
     }
 }
 
