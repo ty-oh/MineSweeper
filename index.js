@@ -8,6 +8,11 @@ var isLeftPressed = false;
 var isBothPressed = false;
 var level = document.querySelector('select').value;
 let timer;
+var flagCount = 0;
+
+function updateMineFlagCounter() {
+    document.querySelector('#MinesOrFlags').innerText = `Flags: ${flagCount}/${totalMine}`;
+}
 
 class MineBox {
     constructor(box, isMine, number) {
@@ -73,12 +78,15 @@ function gameStart() {
     window.oncontextmenu = function() {
         return false;
     }
+    updateMineFlagCounter();
 }
 
 function fieldReset() {
     clearInterval(timer);
     timer = false;
     document.querySelector('#field').innerHTML = ``;
+    flagCount = 0;
+    updateMineFlagCounter();
     while( mineMatrix.length > 0 ) {
         mineMatrix.pop();
     }
@@ -128,10 +136,13 @@ function setEvent() {
         if(target.dataset.isFlag === 'true') {
             target.dataset.isFlag = false;
             target.innerHTML = ``;
+            flagCount--;
         } else{
             target.dataset.isFlag = true;
             target.innerHTML = `<span class="material-icons">flag</span>`;
+            flagCount++;
         }
+        updateMineFlagCounter();
     }
 
     function openNotFlaged(target) {
