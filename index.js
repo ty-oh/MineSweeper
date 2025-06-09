@@ -1,12 +1,7 @@
-const fragment = document.createDocumentFragment();
 const mineMatrix = [];
 var totalMine = 10;
 var totalCol = 10;
 var totalRow = 10;
-var isRightPressed = false;
-var isLeftPressed = false;
-var isBothPressed = false;
-var level = document.querySelector('select').value;
 let timer;
 
 class MineBox {
@@ -30,13 +25,12 @@ function cell(i, j) {
 }
 
 function gameStart() {
-
-
+    const fragment = document.createDocumentFragment();
     fieldReset();
     //필드 객체 생성
-    for(i=0; i<totalRow; i++) {
+    for (let i = 0; i < totalRow; i++) {
         const mineMatrixRow = [];
-        for(j=0; j<totalCol; j++) {
+        for (let j = 0; j < totalCol; j++) {
             const div = cell(i, j);
             const mineBox = new MineBox(div, false, 0);
             mineMatrixRow.push(mineBox);
@@ -45,21 +39,21 @@ function gameStart() {
     }
 
     //필드 HTML 삽입
-    for(i=0; i<mineMatrix.length; i++) {
+    for (let i = 0; i < mineMatrix.length; i++) {
         const row = document.createElement('div');
         row.className = 'matrix_row';
 
-        for(j=0; j<mineMatrix[i].length; j++) {
+        for (let j = 0; j < mineMatrix[i].length; j++) {
             row.appendChild(mineMatrix[i][j].box);
         }
         fragment.appendChild(row);
     }
 
     //지뢰 생성
-    for(i=0; i<totalMine; i++) {
-        random = Math.floor(Math.random()*totalRow*totalCol);
-        randomx = Math.floor(random/totalCol);
-        randomy = random % totalCol; // ***
+    for (let i = 0; i < totalMine; i++) {
+        const random = Math.floor(Math.random() * totalRow * totalCol);
+        const randomx = Math.floor(random / totalCol);
+        const randomy = random % totalCol; // ***
 
         if (mineMatrix[randomx][randomy].box.dataset.isMine == 'true') {
             i--;
@@ -87,6 +81,9 @@ gameStart();
 setEvent();
 
 function setEvent() {
+    let isRightPressed = false;
+    let isLeftPressed = false;
+    let isBothPressed = false;
     //이벤트
     document.querySelector('#field').addEventListener('click', ({ target }) => {
         if (!timer) setTimer();
@@ -105,7 +102,7 @@ function setEvent() {
     document.querySelector('#field').addEventListener('mouseup', ({ target, which, button }) => {
         if (which == 1 || button == 0) isLeftPressed = false;
         if (which == 3 || button == 2) isRightPressed = false;
-        isRightClick = (which == 3) || (button == 2);
+        const isRightClick = (which == 3) || (button == 2);
 
         if(target.classList.contains('checked')) {
             if(isBothPressed) openNotFlaged(target);
